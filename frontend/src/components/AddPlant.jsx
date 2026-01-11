@@ -37,7 +37,7 @@ export default function AddPlant() {
 
   return (
     <div className="container mt-4">
-      <div className="card shadow-sm">
+      <div className="card shadow-sm bg-dark text-white">
         <div className="card-header bg-success text-white">
           <h4 className="mb-0">Add New Plant</h4>
         </div>
