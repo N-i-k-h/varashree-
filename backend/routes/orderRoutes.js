@@ -64,6 +64,7 @@ function generateInvoiceStream(order, items, res) {
   doc.fontSize(10).font("Helvetica");
   doc.text(`Invoice No : ${order.orderNo}`, 40, y);
   doc.text(`Date : ${new Date(order.createdAt).toLocaleDateString("en-IN")}`, 350, y);
+  doc.text(`Payment Mode : ${order.paymentMethod || "Cash"}`, 350, y + 15);
 
   y += 15;
   doc.text(`Customer Name : ${order.customerName}`, 40, y);
@@ -327,6 +328,7 @@ router.post("/", async (req, res) => {
             balanceAmount: (payload.grandTotal - (payload.paidAmount || 0)),
             status: (payload.grandTotal - (payload.paidAmount || 0)) <= 0 ? "Paid" : "Pending",
             finalPaymentDate: payload.finalPaymentDate || null,
+            paymentMethod: payload.paymentMethod || "Cash",
           },
           { transaction: t }
         );

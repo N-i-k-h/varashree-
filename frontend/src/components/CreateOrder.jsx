@@ -82,6 +82,7 @@ export default function CreateOrder() {
 
   // ✅ Paid Amount State (default to grandTotal)
   const [paidAmount, setPaidAmount] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [isPaidTouched, setIsPaidTouched] = useState(false);
 
   // Sync paidAmount with grandTotal UNLESS user has manually edited it
@@ -132,7 +133,9 @@ export default function CreateOrder() {
       subTotal,
       discount,
       grandTotal,
+      grandTotal,
       paidAmount: Number(paidAmount),
+      paymentMethod,
       // Balance and Status calculated on backend, but we send paidAmount
     };
 
@@ -329,6 +332,23 @@ export default function CreateOrder() {
                   value={paidAmount}
                   onChange={handlePaidChange}
                 />
+              </div>
+
+              {/* PAYMENT METHOD */}
+              <div className="mb-3">
+                <label className="fw-bold d-block mb-2">Payment Method</label>
+                <div className="form-check form-check-inline">
+                  <input className="form-check-input" type="radio" name="payMethod" value="Cash" checked={paymentMethod === "Cash"} onChange={(e) => setPaymentMethod(e.target.value)} />
+                  <label className="form-check-label">Cash</label>
+                </div>
+                <div className="form-check form-check-inline">
+                  <input className="form-check-input" type="radio" name="payMethod" value="Online" checked={paymentMethod === "Online"} onChange={(e) => setPaymentMethod(e.target.value)} />
+                  <label className="form-check-label">Online</label>
+                </div>
+                <div className="form-check form-check-inline">
+                  <input className="form-check-input" type="radio" name="payMethod" value="Card" checked={paymentMethod === "Card"} onChange={(e) => setPaymentMethod(e.target.value)} />
+                  <label className="form-check-label">Card</label>
+                </div>
               </div>
 
               {/* BALANCE DISPLAY */}

@@ -10,32 +10,32 @@ export default function Reports() {
   const [results, setResults] = useState([]);
 
   // 📅 Generate filtered report
- const generate = async () => {
-  try {
-    const res = await API.get("/orders");
+  const generate = async () => {
+    try {
+      const res = await API.get("/orders");
 
-    const data = res.data.filter((o) => {
-      const orderDate = new Date(o.createdAt);
+      const data = res.data.filter((o) => {
+        const orderDate = new Date(o.createdAt);
 
-      let startDate = start ? new Date(start) : null;
-      let endDate = end ? new Date(end) : null;
+        let startDate = start ? new Date(start) : null;
+        let endDate = end ? new Date(end) : null;
 
-      // Normalize to full-day range
-      if (startDate) startDate.setHours(0, 0, 0, 0);
-      if (endDate) endDate.setHours(23, 59, 59, 999);
+        // Normalize to full-day range
+        if (startDate) startDate.setHours(0, 0, 0, 0);
+        if (endDate) endDate.setHours(23, 59, 59, 999);
 
-      if (startDate && orderDate < startDate) return false;
-      if (endDate && orderDate > endDate) return false;
+        if (startDate && orderDate < startDate) return false;
+        if (endDate && orderDate > endDate) return false;
 
-      return true;
-    });
+        return true;
+      });
 
-    setResults(data);
-  } catch (err) {
-    console.error("❌ Failed to fetch orders:", err);
-    alert("Failed to fetch orders");
-  }
-};
+      setResults(data);
+    } catch (err) {
+      console.error("❌ Failed to fetch orders:", err);
+      alert("Failed to fetch orders");
+    }
+  };
 
 
   // 📊 Export to Excel
@@ -48,6 +48,7 @@ export default function Reports() {
         "Customer": r.customerName,
         "Date": new Date(r.createdAt).toLocaleString(),
         "Total (₹)": r.grandTotal,
+        "Payment Info": `${r.paymentMethod || "Cash"} - ${r.status}`,
       }))
     );
     const workbook = XLSX.utils.book_new();
@@ -57,34 +58,35 @@ export default function Reports() {
 
   // 🧾 Export to PDF
   // 🧾 Export to PDF
-const downloadPDF = () => {
-  if (results.length === 0) return alert("No data to export");
+  const downloadPDF = () => {
+    if (results.length === 0) return alert("No data to export");
 
-  const doc = new jsPDF();
+    const doc = new jsPDF();
 
-  doc.setFontSize(14);
-  doc.text("Varashree Nursery - Sales Report", 14, 15);
-  doc.setFontSize(10);
-  doc.text(`From: ${start || "All"}  To: ${end || "All"}`, 14, 22);
+    doc.setFontSize(14);
+    doc.text("Varashree Nursery - Sales Report", 14, 15);
+    doc.setFontSize(10);
+    doc.text(`From: ${start || "All"}  To: ${end || "All"}`, 14, 22);
 
-  const tableData = results.map((r, i) => [
-    i + 1,
-    r.orderNo,
-    r.customerName,
-    new Date(r.createdAt).toLocaleString(),
-    `₹ ${r.grandTotal.toFixed(2)}`,
-  ]);
+    const tableData = results.map((r, i) => [
+      i + 1,
+      r.orderNo,
+      r.customerName,
+      new Date(r.createdAt).toLocaleString(),
+      `₹ ${r.grandTotal.toFixed(2)}`,
+      `${r.paymentMethod || "Cash"} - ${r.status}`,
+    ]);
 
-  autoTable(doc, {
-    startY: 28,
-    head: [["No", "Order No", "Customer", "Date", "Total (₹)"]],
-    body: tableData,
-    theme: "grid",
-    headStyles: { fillColor: [46, 125, 50] }, // green header
-  });
+    autoTable(doc, {
+      startY: 28,
+      head: [["No", "Order No", "Customer", "Date", "Total (₹)", "Payment Info"]],
+      body: tableData,
+      theme: "grid",
+      headStyles: { fillColor: [46, 125, 50] }, // green header
+    });
 
-  doc.save("Nursery_Report.pdf");
-};
+    doc.save("Nursery_Report.pdf");
+  };
 
   return (
     <div className="container mt-4">
@@ -145,6 +147,7 @@ const downloadPDF = () => {
                     <th>Order No</th>
                     <th>Customer</th>
                     <th>Date</th>
+                    <th>Payment Info</th>
                     <th>Total (₹)</th>
                   </tr>
                 </thead>
@@ -155,6 +158,10 @@ const downloadPDF = () => {
                       <td>{r.orderNo}</td>
                       <td>{r.customerName}</td>
                       <td>{new Date(r.createdAt).toLocaleString()}</td>
+                      <td>
+                        <span className="badge bg-light text-dark border me-1">{r.paymentMethod || "Cash"}</span>
+                        <span className={`badge ${r.status === "Paid" ? "bg-success" : "bg-warning text-dark"}`}>{r.status}</span>
+                      </td>
                       <td className="fw-bold text-success">
                         ₹ {r.grandTotal.toFixed(2)}
                       </td>

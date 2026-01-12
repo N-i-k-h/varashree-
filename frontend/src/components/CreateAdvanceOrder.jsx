@@ -83,6 +83,7 @@ export default function CreateAdvanceOrder() {
 
     // ✅ Paid Amount State (For Advance, default to 0 or manual)
     const [paidAmount, setPaidAmount] = useState(0);
+    const [paymentMethod, setPaymentMethod] = useState("Cash");
 
     const balanceAmount = grandTotal - paidAmount;
 
@@ -115,6 +116,7 @@ export default function CreateAdvanceOrder() {
             grandTotal,
             paidAmount: Number(paidAmount),
             finalPaymentDate: form.finalPaymentDate,
+            paymentMethod,
         };
 
         try {
@@ -337,6 +339,23 @@ export default function CreateAdvanceOrder() {
                                     value={paidAmount}
                                     onChange={(e) => setPaidAmount(Number(e.target.value))}
                                 />
+                            </div>
+
+                            {/* PAYMENT METHOD */}
+                            <div className="mb-2 bg-light p-2 rounded border border-primary">
+                                <label className="fw-bold text-primary d-block mb-2">Payment Method</label>
+                                <div className="form-check form-check-inline">
+                                    <input className="form-check-input" type="radio" name="advPayMethod" value="Cash" checked={paymentMethod === "Cash"} onChange={(e) => setPaymentMethod(e.target.value)} />
+                                    <label className="form-check-label">Cash</label>
+                                </div>
+                                <div className="form-check form-check-inline">
+                                    <input className="form-check-input" type="radio" name="advPayMethod" value="Online" checked={paymentMethod === "Online"} onChange={(e) => setPaymentMethod(e.target.value)} />
+                                    <label className="form-check-label">Online</label>
+                                </div>
+                                <div className="form-check form-check-inline">
+                                    <input className="form-check-input" type="radio" name="advPayMethod" value="Card" checked={paymentMethod === "Card"} onChange={(e) => setPaymentMethod(e.target.value)} />
+                                    <label className="form-check-label">Card</label>
+                                </div>
                             </div>
 
                             {/* BALANCE DISPLAY */}
