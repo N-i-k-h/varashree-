@@ -11,6 +11,7 @@ export default function CreateOrder() {
     customerName: "",
     customerContact: "",
     customerAddress: "",
+    finalPaymentDate: "",
   });
 
   const navigate = useNavigate();
@@ -133,9 +134,10 @@ export default function CreateOrder() {
       subTotal,
       discount,
       grandTotal,
-      grandTotal,
       paidAmount: Number(paidAmount),
       paymentMethod,
+      finalPaymentDate: balanceAmount > 0 ? form.finalPaymentDate : null,
+      employeeName: form.employeeName, // ✅ Send Employee Name
       // Balance and Status calculated on backend, but we send paidAmount
     };
 
@@ -179,6 +181,8 @@ export default function CreateOrder() {
               }
             />
           </div>
+
+
 
           <div className="col-md-4">
             <label>Address *</label>
@@ -301,6 +305,22 @@ export default function CreateOrder() {
           })}
         </div>
 
+        {/* EMPLOYEE NAME (Moved Here) */}
+        <div className="row mb-3">
+          <div className="col-md-4">
+            <label className="fw-bold">Employee Name (Attended By)</label>
+            <input
+              className="form-control border-primary"
+              required
+              placeholder="Enter name..."
+              value={form.employeeName || ""}
+              onChange={(e) =>
+                setForm({ ...form, employeeName: e.target.value })
+              }
+            />
+          </div>
+        </div>
+
         {/* TOTALS */}
         <div className="border-top pt-3">
           <div className="row">
@@ -358,6 +378,19 @@ export default function CreateOrder() {
                   ₹ {balanceAmount.toFixed(2)}
                 </span>
               </div>
+
+              {balanceAmount > 0 && (
+                <div className="mt-3">
+                  <label className="fw-bold text-danger">Final Payment Date *</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    required
+                    value={form.finalPaymentDate}
+                    onChange={(e) => setForm({ ...form, finalPaymentDate: e.target.value })}
+                  />
+                </div>
+              )}
 
             </div>
           </div>

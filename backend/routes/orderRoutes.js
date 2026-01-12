@@ -2,8 +2,7 @@ const express = require("express");
 const router = express.Router();
 const PDFDocument = require("pdfkit");
 const { Sequelize } = require("sequelize");   // ✅ FIX ADDED
-const { Order, OrderItem } = require("../models/Order");
-const Plant = require("../models/Plant");
+const { Order, OrderItem, Plant } = require("../models");
 const path = require("path");
 
 
@@ -72,6 +71,7 @@ function generateInvoiceStream(order, items, res) {
   doc.text(`Contact : ${order.customerContact || "-"}`, 40, y);
   y += 15;
   doc.text(`Address : ${order.customerAddress || "-"}`, 40, y);
+  doc.text(`Attended By : ${order.employeeName || "-"}`, 350, y);
 
   // ================= TABLE =================
   y += 25;
@@ -329,6 +329,7 @@ router.post("/", async (req, res) => {
             status: (payload.grandTotal - (payload.paidAmount || 0)) <= 0 ? "Paid" : "Pending",
             finalPaymentDate: payload.finalPaymentDate || null,
             paymentMethod: payload.paymentMethod || "Cash",
+            employeeName: payload.employeeName, // ✅ Save Employee Name
           },
           { transaction: t }
         );
@@ -398,7 +399,7 @@ router.get("/:id/invoice", async (req, res) => {
 // ========================
 router.put("/:id/pay", async (req, res) => {
   try {
-    const { paidAmount } = req.body;
+    const { paidAmount, finalPaymentDate } = req.body;
     const order = await Order.findByPk(req.params.id);
 
     if (!order) return res.status(404).json({ error: "Order not found" });
@@ -407,11 +408,17 @@ router.put("/:id/pay", async (req, res) => {
     const newBalance = grandTotal - paidAmount;
     const newStatus = newBalance <= 0 ? "Paid" : "Pending";
 
-    await order.update({
+    const updateData = {
       paidAmount: paidAmount,
       balanceAmount: newBalance,
       status: newStatus,
-    });
+    };
+
+    if (finalPaymentDate !== undefined) {
+      updateData.finalPaymentDate = finalPaymentDate;
+    }
+
+    await order.update(updateData);
 
     res.json({ message: "Payment updated", order });
   } catch (err) {

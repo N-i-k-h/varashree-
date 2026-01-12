@@ -47,8 +47,10 @@ export default function Reports() {
         "Order No": r.orderNo,
         "Customer": r.customerName,
         "Date": new Date(r.createdAt).toLocaleString(),
-        "Total (₹)": r.grandTotal,
         "Payment Info": `${r.paymentMethod || "Cash"} - ${r.status}`,
+        "Total (₹)": r.grandTotal,
+        "Paid (₹)": r.paidAmount || 0,
+        "Balance (₹)": r.balanceAmount || 0,
       }))
     );
     const workbook = XLSX.utils.book_new();
@@ -56,7 +58,6 @@ export default function Reports() {
     XLSX.writeFile(workbook, "Nursery_Report.xlsx");
   };
 
-  // 🧾 Export to PDF
   // 🧾 Export to PDF
   const downloadPDF = () => {
     if (results.length === 0) return alert("No data to export");
@@ -72,14 +73,16 @@ export default function Reports() {
       i + 1,
       r.orderNo,
       r.customerName,
-      new Date(r.createdAt).toLocaleString(),
-      `₹ ${r.grandTotal.toFixed(2)}`,
+      new Date(r.createdAt).toLocaleDateString(),
       `${r.paymentMethod || "Cash"} - ${r.status}`,
+      `₹ ${r.grandTotal.toFixed(2)}`,
+      `₹ ${(r.paidAmount || 0).toFixed(2)}`,
+      `₹ ${(r.balanceAmount || 0).toFixed(2)}`,
     ]);
 
     autoTable(doc, {
       startY: 28,
-      head: [["No", "Order No", "Customer", "Date", "Total (₹)", "Payment Info"]],
+      head: [["No", "Order No", "Customer", "Date", "Info", "Total", "Paid", "Due"]],
       body: tableData,
       theme: "grid",
       headStyles: { fillColor: [46, 125, 50] }, // green header
@@ -146,9 +149,12 @@ export default function Reports() {
                     <th>No</th>
                     <th>Order No</th>
                     <th>Customer</th>
+                    <th>Employee</th>
                     <th>Date</th>
                     <th>Payment Info</th>
                     <th>Total (₹)</th>
+                    <th>Paid (₹)</th>
+                    <th>Balance (₹)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -157,13 +163,20 @@ export default function Reports() {
                       <td>{i + 1}</td>
                       <td>{r.orderNo}</td>
                       <td>{r.customerName}</td>
+                      <td>{r.employeeName || "-"}</td>
                       <td>{new Date(r.createdAt).toLocaleString()}</td>
                       <td>
                         <span className="badge bg-light text-dark border me-1">{r.paymentMethod || "Cash"}</span>
                         <span className={`badge ${r.status === "Paid" ? "bg-success" : "bg-warning text-dark"}`}>{r.status}</span>
                       </td>
-                      <td className="fw-bold text-success">
+                      <td className="fw-bold">
                         ₹ {r.grandTotal.toFixed(2)}
+                      </td>
+                      <td className="text-success fw-bold">
+                        ₹ {(r.paidAmount || 0).toFixed(2)}
+                      </td>
+                      <td className="text-danger fw-bold">
+                        ₹ {(r.balanceAmount || 0).toFixed(2)}
                       </td>
                     </tr>
                   ))}

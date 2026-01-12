@@ -16,6 +16,7 @@ export default function AdvanceOrders() {
             const advances = res.data.filter(
                 (o) => (o.finalPaymentDate && o.finalPaymentDate !== null) || o.orderNo.startsWith("ADV-")
             );
+            console.log("Fetched Advances:", advances); // DEBUG
             setOrders(advances);
         } catch (err) {
             console.error(err);
@@ -98,6 +99,7 @@ export default function AdvanceOrders() {
                             <tr>
                                 <th>Order Info</th>
                                 <th>Customer</th>
+                                <th>Employee</th>
                                 <th>Plants (Stock)</th>
                                 <th>Total Payment</th>
                                 <th>Advance Paid</th>
@@ -109,14 +111,16 @@ export default function AdvanceOrders() {
                         <tbody>
                             {orders.map((o) => {
                                 const isEditing = editingId === o.id;
-                                const isOverdue = new Date(o.finalPaymentDate) < new Date() && o.balanceAmount > 0;
+                                const isOverdue = o.finalPaymentDate && new Date(o.finalPaymentDate) < new Date() && o.balanceAmount > 0;
 
                                 return (
                                     <tr key={o.id} className={isOverdue ? "table-danger" : ""}>
                                         {/* Order Info */}
                                         <td>
                                             <div className="fw-bold">{o.orderNo}</div>
-                                            <small className="text-muted">Due: {o.finalPaymentDate}</small>
+                                            <small className="text-muted">
+                                                Due: {o.finalPaymentDate ? new Date(o.finalPaymentDate).toLocaleDateString("en-IN") : <span className="text-danger">Not Set</span>}
+                                            </small>
                                             {isOverdue && <div className="badge bg-danger mt-1">Overdue</div>}
                                         </td>
 
@@ -124,6 +128,11 @@ export default function AdvanceOrders() {
                                         <td>
                                             <div>{o.customerName}</div>
                                             <small className="text-muted">{o.customerContact}</small>
+                                        </td>
+
+                                        {/* Employee */}
+                                        <td className="text-muted small">
+                                            {o.employeeName || "-"}
                                         </td>
 
                                         {/* Plants */}
@@ -144,17 +153,17 @@ export default function AdvanceOrders() {
 
                                         {/* Total Payment/Grand Total */}
                                         <td className="fw-bold">
-                                            ₹ {o.grandTotal.toFixed(2)}
+                                            ₹ {Number(o.grandTotal || 0).toFixed(2)}
                                         </td>
 
                                         {/* Advance/Paid Amount */}
                                         <td className="text-success fw-bold">
-                                            ₹ {o.paidAmount.toFixed(2)}
+                                            ₹ {Number(o.paidAmount || 0).toFixed(2)}
                                         </td>
 
                                         {/* Left Due/Balance Amount */}
                                         <td className="text-danger fw-bold">
-                                            ₹ {o.balanceAmount.toFixed(2)}
+                                            ₹ {Number(o.balanceAmount || 0).toFixed(2)}
                                         </td>
 
                                         {/* Status */}
@@ -173,6 +182,7 @@ export default function AdvanceOrders() {
                                                             <input
                                                                 type="number"
                                                                 className="form-control form-control-sm"
+                                                                placeholder="Amount"
                                                                 value={payAmount}
                                                                 onChange={(e) => setPayAmount(e.target.value)}
                                                             />

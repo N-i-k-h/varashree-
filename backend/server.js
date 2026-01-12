@@ -34,7 +34,17 @@ app.use("/api/products", productRoutes);
 app.use("/api/estimations", estimationRoutes);
 app.use("/api/purchases", purchaseRoutes);
 
-// ✅ Start server after DB sync
+// ✅ Deployment: Serve Frontend Static Files
+const publicPath = path.join(__dirname, "public");
+if (require("fs").existsSync(publicPath)) {
+  console.log("📂 Serving static files from:", publicPath);
+  app.use(express.static(publicPath));
+
+  // Handle React routing, return all requests to React app
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(publicPath, "index.html"));
+  });
+}
 const PORT = process.env.PORT || 5000;
 
 sequelize

@@ -6,6 +6,7 @@ const Order = sequelize.define("Order", {
   customerName: { type: DataTypes.STRING, allowNull: false },
   customerContact: DataTypes.STRING,
   customerAddress: DataTypes.STRING,
+  employeeName: DataTypes.STRING, // ✅ Added Employee Name field
 
   subTotal: DataTypes.FLOAT,
 
@@ -27,7 +28,7 @@ const Order = sequelize.define("Order", {
   },
 
   finalPaymentDate: {
-    type: DataTypes.DATEONLY,
+    type: DataTypes.DATE,
     allowNull: true,
   },
 

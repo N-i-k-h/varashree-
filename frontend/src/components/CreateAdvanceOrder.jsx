@@ -117,6 +117,7 @@ export default function CreateAdvanceOrder() {
             paidAmount: Number(paidAmount),
             finalPaymentDate: form.finalPaymentDate,
             paymentMethod,
+            employeeName: form.employeeName, // ✅ Send Employee Name
         };
 
         try {
@@ -205,6 +206,9 @@ export default function CreateAdvanceOrder() {
                         />
                     </div>
                 </div>
+
+                {/* EMPLOYEE NAME */}
+
 
                 {/* ITEMS */}
                 <div className="mb-3">
@@ -309,6 +313,22 @@ export default function CreateAdvanceOrder() {
                 </div>
 
                 {/* TOTALS */}
+                {/* EMPLOYEE NAME */}
+                <div className="row mb-3">
+                    <div className="col-md-3">
+                        <label className="fw-bold">Employee Name (Attended By)</label>
+                        <input
+                            className="form-control border-primary"
+                            required
+                            placeholder="Enter name..."
+                            value={form.employeeName || ""}
+                            onChange={(e) =>
+                                setForm({ ...form, employeeName: e.target.value })
+                            }
+                        />
+                    </div>
+                </div>
+
                 <div className="border-top pt-3">
                     <div className="row">
                         <div className="col-md-4 offset-md-8">

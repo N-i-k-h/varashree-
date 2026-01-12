@@ -64,7 +64,7 @@ export default function Dashboard() {
           <div className="stat-card card-gradient-teal h-100" style={{ animation: "slideInUp 0.3s ease-out" }}>
             <div className="card-body">
               <div className="d-flex flex-column">
-                <small className="text-white-50 text-uppercase fw-bold mb-1">Total Plants</small>
+                <small className="text-white text-uppercase fw-bold mb-1">Total Plants</small>
                 <h2 className="fw-bold display-5 mb-0 text-white">{plants.length}</h2>
               </div>
               <i className="bi bi-flower1 stat-icon-bg"></i>
@@ -77,7 +77,7 @@ export default function Dashboard() {
           <div className="stat-card card-gradient-purple h-100" style={{ animation: "slideInUp 0.4s ease-out" }}>
             <div className="card-body">
               <div className="d-flex flex-column">
-                <small className="text-white-50 text-uppercase fw-bold mb-1">Total Stock</small>
+                <small className="text-white text-uppercase fw-bold mb-1">Total Stock</small>
                 <h2 className="fw-bold display-5 mb-0 text-white">{totalStock}</h2>
               </div>
               <i className="bi bi-boxes stat-icon-bg"></i>
@@ -90,7 +90,7 @@ export default function Dashboard() {
           <div className="stat-card card-gradient-orange h-100" style={{ animation: "slideInUp 0.5s ease-out" }}>
             <div className="card-body">
               <div className="d-flex flex-column">
-                <small className="text-white-50 text-uppercase fw-bold mb-1">Total Orders</small>
+                <small className="text-white text-uppercase fw-bold mb-1">Total Orders</small>
                 <h2 className="fw-bold display-5 mb-0 text-white">{orders.length}</h2>
               </div>
               <i className="bi bi-cart-check stat-icon-bg"></i>
@@ -103,7 +103,7 @@ export default function Dashboard() {
           <div className="stat-card card-gradient-green h-100" style={{ animation: "slideInUp 0.6s ease-out" }}>
             <div className="card-body">
               <div className="d-flex flex-column">
-                <small className="text-white-50 text-uppercase fw-bold mb-1">Total Revenue</small>
+                <small className="text-white text-uppercase fw-bold mb-1">Total Revenue</small>
                 <h2 className="fw-bold display-5 mb-0 text-white">₹{totalRevenue.toLocaleString('en-IN')}</h2>
               </div>
               <i className="bi bi-currency-rupee stat-icon-bg"></i>

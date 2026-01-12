@@ -57,7 +57,7 @@ export default function Sidebar({ toggleSidebar, open }) {
               <li className="nav-item" key={index}>
                 <NavLink
                   to={item.to}
-                  end={item.to === "/"}
+                  end
                   onClick={closeSidebar}
                   className={({ isActive }) =>
                     `custom-nav-link text-decoration-none ${isActive ? "active" : ""}`

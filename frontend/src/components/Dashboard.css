@@ -62,30 +62,22 @@
 
 /* Custom Gradients for Cards */
 .card-gradient-green {
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/dashboard-revenue-bg.png');
-    background-size: cover;
-    background-position: center;
+    background: linear-gradient(135deg, #66bb6a 0%, #2e7d32 100%);
     color: white;
 }
 
 .card-gradient-teal {
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/dashboard-plants-bg.png');
-    background-size: cover;
-    background-position: center;
+    background: linear-gradient(135deg, #4db6ac 0%, #00796b 100%);
     color: white;
 }
 
 .card-gradient-orange {
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/dashboard-orders-bg.png');
-    background-size: cover;
-    background-position: center;
+    background: linear-gradient(135deg, #ffb74d 0%, #f57c00 100%);
     color: white;
 }
 
 .card-gradient-purple {
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/dashboard-stock-bg.png');
-    background-size: cover;
-    background-position: center;
+    background: linear-gradient(135deg, #ba68c8 0%, #8e24aa 100%);
     color: white;
 }
 
