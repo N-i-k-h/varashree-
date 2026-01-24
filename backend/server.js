@@ -1,0 +1,61 @@
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
+const path = require("path");
+const authRoutes = require("./routes/authRoutes");
+// ✅ Import Sequelize + models (with relationships)
+const { sequelize, Plant, Order, OrderItem } = require("./models");
+
+
+// ✅ Import routes
+const plantRoutes = require("./routes/plantRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+const productRoutes = require("./routes/productRoutes"); // optional
+const estimationRoutes = require("./routes/estimationRoutes");
+const purchaseRoutes = require("./routes/purchaseRoutes");
+const app = express();
+
+// ✅ Middleware
+app.use(cors());
+app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/auth", authRoutes);
+
+
+// ✅ Root route
+app.get("/", (req, res) => {
+  res.json({ ok: true, name: "Varashree Farm & Nursery API (MySQL)" });
+});
+
+// ✅ API routes
+app.use("/api/plants", plantRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/estimations", estimationRoutes);
+app.use("/api/purchases", purchaseRoutes);
+
+// ✅ Deployment: Serve Frontend Static Files
+const publicPath = path.join(__dirname, "public");
+if (require("fs").existsSync(publicPath)) {
+  console.log("📂 Serving static files from:", publicPath);
+  app.use(express.static(publicPath));
+
+  // Handle React routing, return all requests to React app
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(publicPath, "index.html"));
+  });
+}
+const PORT = process.env.PORT || 5000;
+
+sequelize
+  .sync()   // ✅ Removed { alter: true } to fix SQLite unique constraint error
+  .then(() => {
+    console.log("✅ MySQL/SQLite connected & synced successfully");
+    app.listen(PORT, () =>
+      console.log(`🚀 Server running on port ${PORT}`)
+    );
+  })
+  .catch((err) => {
+    console.error("❌ MySQL connection error:", err);
+    process.exit(1);
+  });
