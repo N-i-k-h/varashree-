@@ -3,6 +3,8 @@ const Plant = require("./Plant");
 const { Order, OrderItem } = require("./Order");
 const { Estimation, EstimationItem } = require("./Estimation");
 
+const User = require("./User");
+
 // Orders
 Order.hasMany(OrderItem, { as: "orderItems", foreignKey: "orderId" });
 OrderItem.belongsTo(Order, { foreignKey: "orderId" });
@@ -26,4 +28,5 @@ module.exports = {
   OrderItem,
   Estimation,
   EstimationItem,
+  User,
 };
