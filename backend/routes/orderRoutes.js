@@ -56,7 +56,7 @@ function generateInvoiceStream(order, items, res) {
   doc
     .font("Helvetica-Bold")
     .fontSize(12)
-    .text("TAX INVOICE", 0, 122, { align: "center" });
+    .text("INVOICE", 0, 122, { align: "center" });
 
   // ================= CUSTOMER DETAILS =================
   let y = 155;
