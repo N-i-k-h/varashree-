@@ -76,6 +76,7 @@ export default function PurchaseDashboard() {
               <th>Name</th>
               <th>Phone</th>
               <th>Date</th>
+              <th>Total Amount</th>
               <th>Plants</th>
             </tr>
           </thead>
@@ -85,6 +86,7 @@ export default function PurchaseDashboard() {
                 <td>{o.customerName}</td>
                 <td>{o.customerContact}</td>
                 <td>{new Date(o.createdAt).toLocaleDateString()}</td>
+                <td>₹ {o.grandTotal}</td>
                 <td>
                   {o.orderItems.map((i) => (
                     <div key={i.id}>
