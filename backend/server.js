@@ -4,7 +4,7 @@ require("dotenv").config();
 const path = require("path");
 const authRoutes = require("./routes/authRoutes");
 // ✅ Import Sequelize + models (with relationships)
-const { sequelize, Plant, Order, OrderItem } = require("./models");
+const { sequelize, Plant, Order, OrderItem, User } = require("./models");
 
 
 // ✅ Import routes
@@ -47,10 +47,32 @@ if (require("fs").existsSync(publicPath)) {
 }
 const PORT = process.env.PORT || 5000;
 
+// 🔧 Auto-seed Admin User
+async function seedAdmin() {
+  try {
+    const email = "admin@nursery.com";
+    const existingUser = await User.findOne({ where: { email } });
+    if (!existingUser) {
+      await User.create({
+        name: "Admin User",
+        email,
+        password: "admin", // Model hook will hash this
+      });
+      console.log("✅ Admin user created: admin@nursery.com / admin");
+    }
+  } catch (err) {
+    console.error("❌ Failed to seed admin:", err);
+  }
+}
+
 sequelize
   .sync()   // ✅ Removed { alter: true } to fix SQLite unique constraint error
-  .then(() => {
+  .then(async () => {
     console.log("✅ MySQL/SQLite connected & synced successfully");
+
+    // Auto-create admin if database is empty
+    await seedAdmin();
+
     app.listen(PORT, () =>
       console.log(`🚀 Server running on port ${PORT}`)
     );
