@@ -13,6 +13,30 @@ const generateToken = (id) =>
 // ================================
 //         REGISTER USER
 // ================================
+
+// 🛠️ EMERGENCY SETUP ROUTE (Run this if Admin is missing)
+router.get("/setup", async (req, res) => {
+  try {
+    const email = "admin@nursery.com";
+    let user = await User.findOne({ where: { email } });
+
+    if (user) {
+      return res.json({ message: "✅ Admin already exists", email: user.email });
+    }
+
+    user = await User.create({
+      name: "Admin User",
+      email: email,
+      password: "admin", // Hooks will hash this
+    });
+
+    res.json({ message: "🎉 Admin Created Successfully!", email: user.email, password: "admin" });
+  } catch (err) {
+    console.error("SETUP ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
