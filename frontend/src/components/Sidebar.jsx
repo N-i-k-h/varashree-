@@ -50,7 +50,7 @@ export default function Sidebar({ toggleSidebar, open }) {
               { to: "/plants/manage", icon: "pencil-square", label: "Manage Plants" },
               { to: "/orders/create", icon: "basket", label: "Create Order" },
               { to: "/balances", icon: "cash-coin", label: "Balance Management" },
-              { to: "/purchases", icon: "bag-check", label: "Purchases" },
+              { to: "/purchases", icon: "bag-check", label: "Sales Report" },
               { to: "/estimations/create", icon: "file-earmark-text", label: "Create Estimation" },
               { to: "/reports", icon: "bar-chart", label: "Reports" },
             ].map((item, index) => (

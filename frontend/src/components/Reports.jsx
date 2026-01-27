@@ -92,9 +92,26 @@ export default function Reports() {
 
     const doc = new jsPDF();
 
+    // Summary Calculations
+    const totalGrand = results.reduce((sum, r) => sum + (r.grandTotal || 0), 0);
+    const totalPaid = results.reduce((sum, r) => sum + (r.paidAmount || 0), 0);
+    const totalBalance = results.reduce((sum, r) => sum + (r.balanceAmount || 0), 0);
+
+    let cash = 0, card = 0, upi = 0, other = 0;
+    results.forEach((r) => {
+      const method = (r.paymentMethod || "Cash").toLowerCase();
+      const paid = r.paidAmount || 0;
+      if (method.includes("cash")) cash += paid;
+      else if (method.includes("card")) card += paid;
+      else if (method.includes("upi") || method.includes("online") || method.includes("phonepe") || method.includes("gpay")) upi += paid;
+      else other += paid;
+    });
+
     doc.setFontSize(14);
+    doc.setTextColor(46, 125, 50);
     doc.text("Varashree Nursery - Sales Report", 14, 15);
     doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
     doc.text(`From: ${start || "All"}  To: ${end || "All"}`, 14, 22);
 
     const tableData = results.map((r, i) => [
@@ -103,10 +120,29 @@ export default function Reports() {
       r.customerName,
       new Date(r.createdAt).toLocaleDateString(),
       `${r.paymentMethod || "Cash"} - ${r.status}`,
-      `₹ ${r.grandTotal.toFixed(2)}`,
-      `₹ ${(r.paidAmount || 0).toFixed(2)}`,
-      `₹ ${(r.balanceAmount || 0).toFixed(2)}`,
+      `${r.grandTotal.toFixed(2)}`,
+      `${(r.paidAmount || 0).toFixed(2)}`,
+      `${(r.balanceAmount || 0).toFixed(2)}`,
     ]);
+
+    // Add empty row
+    tableData.push(["", "", "", "", "", "", "", ""]);
+
+    // Add Summary Rows
+    tableData.push([
+      { content: "SUMMARY", colSpan: 5, styles: { halign: 'right', fontStyle: 'bold' } },
+      { content: totalGrand.toFixed(2), styles: { fontStyle: 'bold' } },
+      { content: totalPaid.toFixed(2), styles: { fontStyle: 'bold' } },
+      { content: totalBalance.toFixed(2), styles: { fontStyle: 'bold' } }
+    ]);
+
+    // Breakdown
+    tableData.push(
+      [{ content: "Cash Collection:", colSpan: 5, styles: { halign: 'right' } }, "", cash.toFixed(2), ""],
+      [{ content: "Card Collection:", colSpan: 5, styles: { halign: 'right' } }, "", card.toFixed(2), ""],
+      [{ content: "UPI/Online:", colSpan: 5, styles: { halign: 'right' } }, "", upi.toFixed(2), ""],
+      [{ content: "Other:", colSpan: 5, styles: { halign: 'right' } }, "", other.toFixed(2), ""]
+    );
 
     autoTable(doc, {
       startY: 28,
@@ -114,9 +150,15 @@ export default function Reports() {
       body: tableData,
       theme: "grid",
       headStyles: { fillColor: [46, 125, 50] }, // green header
+      styles: { fontSize: 9 },
+      columnStyles: {
+        5: { halign: 'right' },
+        6: { halign: 'right' },
+        7: { halign: 'right' },
+      }
     });
 
-    doc.save("Nursery_Report.pdf");
+    doc.save("Sales_Report.pdf");
   };
 
   return (

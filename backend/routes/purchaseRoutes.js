@@ -110,7 +110,7 @@ router.get("/pdf", async (req, res) => {
       doc.text(o.customerName, col2, y + 5, { width: 100 });
       doc.text(o.customerContact || "-", col3, y + 5);
       doc.text(itemsStr, col4, y + 5, { width: itemWidth });
-      doc.text(`₹ ${o.grandTotal || 0}`, col5, y + 5);
+      doc.text(`Rs. ${o.grandTotal || 0}`, col5, y + 5);
 
       doc.moveTo(col1, y + rowHeight).lineTo(565, y + rowHeight).strokeColor('#ccc').stroke();
       y += rowHeight;
