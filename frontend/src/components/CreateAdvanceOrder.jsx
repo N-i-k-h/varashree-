@@ -13,6 +13,7 @@ export default function CreateAdvanceOrder() {
         customerAddress: "",
         finalPaymentDate: "", // ✅ Added for Advance Order
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
 
@@ -105,6 +106,8 @@ export default function CreateAdvanceOrder() {
             if (!window.confirm("You are paying the full amount. Is this intentional for an 'Advance Order'?")) return;
         }
 
+        setIsSubmitting(true);
+
         const payload = {
             orderNo: `ADV-${Date.now()}`, // Distinct prefix
             customerName: form.customerName,
@@ -130,6 +133,8 @@ export default function CreateAdvanceOrder() {
             navigate("/advances"); // Redirect to Advance Orders list
         } catch (err) {
             alert(err?.response?.data?.error || "Order failed");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -390,8 +395,17 @@ export default function CreateAdvanceOrder() {
                     </div>
                 </div>
 
-                <button className="btn btn-primary mt-3 btn-lg" disabled={!items.length}>
-                    <i className="bi bi-check-circle me-2"></i> Confirm Advance Order
+                <button className="btn btn-primary mt-3 btn-lg" disabled={!items.length || isSubmitting}>
+                    {isSubmitting ? (
+                        <>
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Processing...
+                        </>
+                    ) : (
+                        <>
+                            <i className="bi bi-check-circle me-2"></i> Confirm Advance Order
+                        </>
+                    )}
                 </button>
             </form>
         </div>
