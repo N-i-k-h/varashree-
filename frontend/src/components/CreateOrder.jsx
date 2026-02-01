@@ -14,6 +14,8 @@ export default function CreateOrder() {
     finalPaymentDate: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
 
   // =============================
@@ -121,9 +123,13 @@ export default function CreateOrder() {
   const submit = async (e) => {
     e.preventDefault();
 
+    if (isSubmitting) return;
+
     if (!items.length) return alert("Add at least one plant");
     if (items.some((i) => !i.plantId))
       return alert("Select plant for all rows");
+
+    setIsSubmitting(true);
 
     const payload = {
       orderNo: `ORD-${Date.now()}`,
@@ -148,6 +154,7 @@ export default function CreateOrder() {
       navigate("/");
     } catch (err) {
       alert(err?.response?.data?.error || "Order failed");
+      setIsSubmitting(false);
     }
   };
 
@@ -396,8 +403,8 @@ export default function CreateOrder() {
           </div>
         </div>
 
-        <button className="btn btn-success mt-3" disabled={!items.length}>
-          Place Order
+        <button className="btn btn-success mt-3" disabled={!items.length || isSubmitting}>
+          {isSubmitting ? "Placing Order..." : "Place Order"}
         </button>
       </form>
 
